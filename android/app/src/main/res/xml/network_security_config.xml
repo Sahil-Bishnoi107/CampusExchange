@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    
+    <!-- Base config applies to all connections -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+
+    <!-- Domain-specific config -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">api.cloudinary.com</domain>
+        <domain includeSubdomains="true">res.cloudinary.com</domain>
+        <domain includeSubdomains="true">cloudinary.com</domain>
+    </domain-config>
+
+</network-security-config>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="default_web_client_id">561478973170-693i0otco8fanp82gfht9iuuc75q0p34.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
+    <string name="app_name">ecommerceapp</string>
+</resources>
