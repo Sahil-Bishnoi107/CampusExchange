@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ReviewsPage extends StatefulWidget {
-  const ReviewsPage({super.key});
+  String itemid;
+  ReviewsPage({super.key,required this.itemid});
 
   @override
   State<ReviewsPage> createState() => _ReviewsPageState();
@@ -12,11 +13,14 @@ class ReviewsPage extends StatefulWidget {
 
 class _ReviewsPageState extends State<ReviewsPage> {
   String selectedFilter = "All";
+  bool isWritingReview = false;
+  double tempRating = 0;
+  final TextEditingController reviewController = TextEditingController();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<Reviewsprovider>().fetchReviews("vferwewffeve");
+      context.read<Reviewsprovider>().fetchReviews(widget.itemid);
     });
     super.initState();
   }
@@ -34,21 +38,46 @@ class _ReviewsPageState extends State<ReviewsPage> {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.red, // purple -> blue (as requested)
-        
-        label: const Text("Write a Review",style: TextStyle(color: Colors.white),),
-        onPressed: () => _openReviewBottomSheet(context),
+        backgroundColor: Colors.red,
+        label: Text(
+          isWritingReview ? "Post Review" : "Write a Review",
+          style: const TextStyle(color: Colors.white),
+        ),
+        onPressed: () {
+          if (isWritingReview) {
+            if (reviewController.text.isNotEmpty && tempRating > 0) {
+              
+              context.read<Reviewsprovider>().postReview(widget.itemid, tempRating.toInt(), reviewController.text );
+              reviewController.clear();
+              tempRating = 0;
+              setState(() {
+                isWritingReview = false;
+              });
+            }
+          } else {
+            setState(() {
+              isWritingReview = true;
+            });
+          }
+        },
       ),
       body: Consumer<Reviewsprovider>(
         builder: (context, provider, child) {
           final int total = provider.totalReviews;
+          List<Widget> reviewWidgets = [];
+          if (isWritingReview) reviewWidgets.add(_buildInlineReviewCard());
+          reviewWidgets.addAll(provider.reviewList
+              .where((review) =>
+                  selectedFilter == "All" ||
+                  review.rating.toString().startsWith(selectedFilter))
+              .map((review) => _buildReviewCard(review))
+              .toList());
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ⭐ Rating Summary
                 Row(
                   children: [
                     Column(
@@ -65,7 +94,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                             (index) => Icon(
                               Icons.star,
                               color: index < provider.averageRating.round()
-                                  ? Colors.red // kept original red
+                                  ? Colors.red
                                   : const Color.fromRGBO(231, 208, 209, 1),
                             ),
                           ),
@@ -89,8 +118,6 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   ],
                 ),
                 const SizedBox(height: 16),
-
-                // 🔍 Filter Section (kept as you originally had)
                 Row(
                   children: [
                     _buildFilterButton("All"),
@@ -99,14 +126,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   ],
                 ),
                 const SizedBox(height: 16),
-
-                // 💬 Reviews List
-                ...provider.reviewList
-                    .where((review) =>
-                        selectedFilter == "All" ||
-                        review.rating.toString().startsWith(selectedFilter))
-                    .map((review) => _buildReviewCard(review))
-                    .toList(),
+                ...reviewWidgets,
               ],
             ),
           );
@@ -116,22 +136,20 @@ class _ReviewsPageState extends State<ReviewsPage> {
   }
 
   Widget _buildRatingBar(String label, int count, int total) {
-    // percentage calculation fixed
     double percent = total == 0 ? 0.0 : (count / total) * 100.0;
-
     return Row(
       children: [
         Text(label),
         const SizedBox(width: 4),
         Container(
-          width:200,
-          padding: EdgeInsets.only(left: 5),
+          width: 200,
+          padding: const EdgeInsets.only(left: 5),
           child: ClipRRect(
-            borderRadius: BorderRadiusGeometry.circular(10),
+            borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
               minHeight: 10,
               value: percent / 100.0,
-              color: Colors.red, // kept original red
+              color: Colors.red,
               backgroundColor: const Color.fromRGBO(231, 208, 209, 1),
             ),
           ),
@@ -147,14 +165,15 @@ class _ReviewsPageState extends State<ReviewsPage> {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: FilterChip(
-       backgroundColor: const Color.fromRGBO(231, 208, 209, 1),
-       selectedColor: Colors.red,
-       showCheckmark: true,
-       checkmarkColor: Colors.white,
-       side: BorderSide(
-        color: selectedFilter == filter ? Colors.red : Colors.white 
-       ),
-        label: Text(filter == "All" ? "All" : "$filter star",style: TextStyle(color:selectedFilter == filter ? Colors.white : Colors.black),),
+        backgroundColor: const Color.fromRGBO(231, 208, 209, 1),
+        selectedColor: Colors.red,
+        showCheckmark: true,
+        checkmarkColor: Colors.white,
+        side: BorderSide(color: isSelected ? Colors.red : Colors.white),
+        label: Text(
+          filter == "All" ? "All" : "$filter star",
+          style: TextStyle(color: isSelected ? Colors.white : Colors.black),
+        ),
         selected: isSelected,
         onSelected: (_) {
           setState(() {
@@ -166,12 +185,11 @@ class _ReviewsPageState extends State<ReviewsPage> {
   }
 
   Widget _buildReviewCard(Review review) {
-   
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color.fromRGBO(252, 248, 248, 1), 
+        color: const Color.fromRGBO(252, 248, 248, 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -190,15 +208,14 @@ class _ReviewsPageState extends State<ReviewsPage> {
                     5,
                     (index) => Icon(Icons.star,
                         size: 16,
-                        color:
-                            index < review.rating ? Colors.red : Colors.grey),
+                        color: index < review.rating ? Colors.red : Colors.grey),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(review.comment),
                 const SizedBox(height: 4),
                 Text(
-                  "${review.reviewDate.toLocal().toString().split(' ')[0]}",
+                  "${DateTime.parse(review.datetime).toLocal().toString().split(' ')[0]}",
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
@@ -209,95 +226,67 @@ class _ReviewsPageState extends State<ReviewsPage> {
     );
   }
 
-  void _openReviewBottomSheet(BuildContext context) {
-    double tempRating = 0;
-    final TextEditingController controller = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+  Widget _buildInlineReviewCard() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color.fromRGBO(252, 248, 248, 1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.red, width: 1),
       ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 24,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Your Review",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close, color: Colors.grey),
+                onPressed: () {
+                  setState(() {
+                    isWritingReview = false;
+                    reviewController.clear();
+                    tempRating = 0;
+                  });
+                },
+              ),
+            ],
           ),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Center(
-                    child: Text(
-                      "Write a Review",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // ⭐ Rating Picker (kept red)
-                  Row(
-                    children: List.generate(
-                      5,
-                      (index) => IconButton(
-                        onPressed: () {
-                          setState(() {
-                            tempRating = index + 1.0;
-                          });
-                        },
-                        icon: Icon(
-                          Icons.star,
-                          size: 32,
-                          color: index < tempRating ? Colors.red : Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-                  // ✍️ Comment Box
-                  TextField(
-                    controller: controller,
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      hintText: "Write your review here...",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-                  // 📤 Post Button (purple -> blue)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // implement post action
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, // changed to blue
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      child: const Text("Post Review"),
-                    ),
-                  )
-                ],
-              );
-            },
+          const SizedBox(height: 8),
+          Row(
+            children: List.generate(
+              5,
+              (index) => IconButton(
+                onPressed: () {
+                  setState(() {
+                    tempRating = index + 1.0;
+                  });
+                },
+                icon: Icon(
+                  Icons.star,
+                  size: 32,
+                  color: index < tempRating ? Colors.red : Colors.grey,
+                ),
+              ),
+            ),
           ),
-        );
-      },
+          TextField(
+            controller: reviewController,
+            maxLines: 4,
+            decoration: InputDecoration(
+              hintText: "Write your review here...",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

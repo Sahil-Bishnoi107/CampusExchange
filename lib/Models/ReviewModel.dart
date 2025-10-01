@@ -4,7 +4,8 @@ class Review {
   final String userImageUrl;
   final double rating;
   final String comment;
-  final DateTime reviewDate;
+  final String datetime;
+  
 
   Review({
     required this.userId,
@@ -12,7 +13,7 @@ class Review {
     required this.userImageUrl,
     required this.rating,
     required this.comment,
-    required this.reviewDate,
+    required this.datetime,
   });
   
   factory Review.fromJson(Map<String, dynamic> json) {
@@ -22,7 +23,7 @@ class Review {
       userImageUrl: json['userimageurl'] ?? '',
       comment: json['comment'] ?? '',
       rating: (json['rating'] ?? 0).toDouble(),
-      reviewDate: DateTime.tryParse(json['reviewdate'] ?? '') ?? DateTime.now(),
+      datetime: DateTime.tryParse(json['reviewdate'] ?? '') ??  json['datetime'] ?? DateTime.now().toIso8601String(),
     );
   }
 }

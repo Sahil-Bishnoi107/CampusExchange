@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:ecommerceapp/Models/ReviewModel.dart';
+import 'package:ecommerceapp/services/ItemServices.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Reviewsprovider extends ChangeNotifier {
   int fiveStars = 0;
@@ -11,34 +16,10 @@ class Reviewsprovider extends ChangeNotifier {
   double averageRating = 0;
 
   List<Review> reviewList = [
-    Review(
-      userId: "1",
-      userName: "Sophia Carter",
-      userImageUrl: "https://i.pravatar.cc/150?img=47",
-      rating: 5,
-      comment:
-          "Absolutely love this product! It's exactly what I was looking for and the quality is top-notch. Highly recommend!",
-      reviewDate: DateTime.now().subtract(const Duration(days: 30)),
-    ),
-    Review(
-      userId: "2",
-      userName: "Ethan Bennett",
-      userImageUrl: "https://i.pravatar.cc/150?img=12",
-      rating: 4,
-      comment: "Good quality overall, but delivery was a bit slow.",
-      reviewDate: DateTime.now().subtract(const Duration(days: 60)),
-    ),
-    Review(
-      userId: "3",
-      userName: "Mia Johnson",
-      userImageUrl: "https://i.pravatar.cc/150?img=32",
-      rating: 3,
-      comment: "Product is okay, but I expected better packaging.",
-      reviewDate: DateTime.now().subtract(const Duration(days: 15)),
-    ),
+   
   ];
 
-  void fetchReviews(String itemid) {
+  void fetchReviews(String itemid) async{
     fiveStars = 0;
     fourStars = 0;
     threeStars = 0;
@@ -47,10 +28,23 @@ class Reviewsprovider extends ChangeNotifier {
     totalReviews = 0;
     averageRating = 0;
 
-    if (reviewList.isEmpty) {
-      notifyListeners();
-      return;
+    reviewList = [];
+    List<Review> templist = [];
+    try{
+     final url = Uri.parse("${baseurl}/api/Item/reviews/${itemid}");
+     final respose = await http.get(url);
+     if(respose.statusCode == 200){
+     final rawjson = jsonDecode(respose.body);
+     for(var v in rawjson){
+     final x = Review.fromJson(v);
+     templist.add(x);
+     }
+     reviewList = templist;}
+     else{
+      print("failed in else");
+     }
     }
+    catch(e){print("could not load reviews with exception $e");}
 
     double totalScore = 0;
 
@@ -81,4 +75,35 @@ class Reviewsprovider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+
+  //PostReview
+  Future<void> postReview(String itemid,int rating,String comment) async{
+   final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+  final id = user?.id ?? "noi";
+  DateTime nowUtc = DateTime.now().toUtc();
+  final url = Uri.parse("${baseurl}/api/Item/addreview");
+  try{
+  final res = await http.post(url,
+  headers: {"Content-Type": "application/json"},
+  body: jsonEncode({
+    "itemid" : itemid,
+    "username" : "John Doe",
+    "profilepic": "https://randomuser.me/api/portraits/men/1.jpg",
+    "userid" : id,
+    "rating" : rating,
+    "comment" : comment,
+    "datetime" : nowUtc.toIso8601String()
+  })
+  );
+  if(res.statusCode == 200){
+    print("review posted successfully");
+  }
+  else{
+    print("else fILED TO POST REVIEW with code ${res.statusCode}");
+  }}
+  catch(e){print("failed to post review with exception $e");}
+  }
+  
 }

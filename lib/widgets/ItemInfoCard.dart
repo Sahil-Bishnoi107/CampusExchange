@@ -103,7 +103,7 @@ class ItemCardWidget extends StatelessWidget {
       right: size.width*0.04,
       top: size.height*0.01,
       child: InkWell(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReviewsPage())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReviewsPage(itemid: item.itemid,))),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
         decoration: BoxDecoration(
