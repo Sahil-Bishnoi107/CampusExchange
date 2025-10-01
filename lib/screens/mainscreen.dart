@@ -1,4 +1,5 @@
 import 'package:ecommerceapp/screens/HomePage.dart';
+import 'package:ecommerceapp/screens/Profilepage.dart';
 import 'package:ecommerceapp/screens/SearchPage.dart';
 import 'package:ecommerceapp/screens/myitemsscreen.dart';
 import 'package:ecommerceapp/widgets/bottomnavbar.dart';
@@ -18,7 +19,7 @@ class _MainscreenState extends State<Mainscreen> {
     SearchPage(),
     MyItemsScreen(),
     const Center(child: Text('History Page', style: TextStyle(fontSize: 24))),
-    const Center(child: Text('Profile Page', style: TextStyle(fontSize: 24))),
+    ProfilePage(),
   ];
   @override
   Widget build(BuildContext context) {

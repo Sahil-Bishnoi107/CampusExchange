@@ -1,4 +1,5 @@
 import 'package:ecommerceapp/providers/MyItemsProvider.dart';
+import 'package:ecommerceapp/providers/UserProvider.dart';
 import 'package:ecommerceapp/providers/imagepickerprovider.dart';
 import 'package:ecommerceapp/providers/reviewsProvider.dart';
 import 'package:ecommerceapp/screens/Loginpage.dart';
@@ -19,7 +20,8 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (_) => ImagePickerProvider()),
       ChangeNotifierProvider(create: (_) => Myitemsprovider()),
-      ChangeNotifierProvider(create: (_) => Reviewsprovider())
+      ChangeNotifierProvider(create: (_) => Reviewsprovider()),
+      ChangeNotifierProvider(create: (_) => UserProvider())
     ],
     child: const MyApp()));
 }
