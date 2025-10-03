@@ -1,3 +1,4 @@
+import 'package:ecommerceapp/providers/AuctionProvider.dart';
 import 'package:ecommerceapp/providers/MyItemsProvider.dart';
 import 'package:ecommerceapp/providers/UserProvider.dart';
 import 'package:ecommerceapp/providers/imagepickerprovider.dart';
@@ -21,7 +22,8 @@ void main() async {
       ChangeNotifierProvider(create: (_) => ImagePickerProvider()),
       ChangeNotifierProvider(create: (_) => Myitemsprovider()),
       ChangeNotifierProvider(create: (_) => Reviewsprovider()),
-      ChangeNotifierProvider(create: (_) => UserProvider())
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+      ChangeNotifierProvider(create: (_) => Auctionprovider())
     ],
     child: const MyApp()));
 }

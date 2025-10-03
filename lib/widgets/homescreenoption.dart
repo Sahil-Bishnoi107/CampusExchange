@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class AuctionCard extends StatelessWidget {
+class HomeCard extends StatelessWidget {
   final String imagePath;
   final String header;
   final String description;
   final VoidCallback? onTap;
 
-  const AuctionCard({
+  const HomeCard({
     Key? key,
     required this.imagePath,
     required this.header,

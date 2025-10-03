@@ -36,9 +36,9 @@ class _HomepageState extends State<Homepage> {
               SizedBox(height: 20,),
               options(height, width),
               SizedBox(height : 10),
-              AuctionCard(imagePath: "assets/images/auction.png", header: "Auction", description: "Discover items up for bid from your campus community.",onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => Auctionspage())),),
-              AuctionCard(imagePath: "assets/images/group.png", header: "Groups", description: "Connect with interest based groups.",onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => Groupspage())),),
-              AuctionCard(imagePath: "assets/images/store.png", header: "Stores", description: "Browse local campus stores and their unique products",onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => StoresPage())),)
+              HomeCard(imagePath: "assets/images/auction.png", header: "Auction", description: "Discover items up for bid from your campus community.",onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => Auctionspage())),),
+              HomeCard(imagePath: "assets/images/group.png", header: "Groups", description: "Connect with interest based groups.",onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => Groupspage())),),
+              HomeCard(imagePath: "assets/images/store.png", header: "Stores", description: "Browse local campus stores and their unique products",onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => StoresPage())),)
             ],
           ),
                 ),
