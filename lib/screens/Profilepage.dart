@@ -36,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        bottom: PreferredSize(preferredSize: const Size.fromHeight(1), child: Container(height: 1,color: Colors.grey,)),
+        bottom: PreferredSize(preferredSize: const Size.fromHeight(1), child: Container(height: 1,color: const Color.fromRGBO(200, 200, 200, 1),)),
         centerTitle: true,
       ),
       body: Consumer<UserProvider>(
@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   margin: const EdgeInsets.symmetric(vertical: 16),
                   padding: const EdgeInsets.all(32),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3E5F5),
+                    color: const Color.fromARGB(255, 231, 244, 254),
                    // borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
@@ -356,7 +356,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 'Edit',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF9C27B0),
+                  color: Colors.blue,
                   fontWeight: FontWeight.w500,
                 ),
               ),

@@ -1,4 +1,8 @@
+import 'package:ecommerceapp/screens/AuctionsPage.dart';
+import 'package:ecommerceapp/screens/GroupsPage.dart';
+import 'package:ecommerceapp/screens/StoresPage.dart';
 import 'package:ecommerceapp/widgets/homepagewidgets.dart';
+import 'package:ecommerceapp/widgets/homescreenoption.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -29,9 +33,12 @@ class _HomepageState extends State<Homepage> {
               SearchBarWidget(),
               SizedBox(height: 30,),
               Container(width:width*0.86, child: Text("Quick Actions",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),)),
-              SizedBox(height: 10,),
-              options(height, width)
-              
+              SizedBox(height: 20,),
+              options(height, width),
+              SizedBox(height : 10),
+              AuctionCard(imagePath: "assets/images/auction.png", header: "Auction", description: "Discover items up for bid from your campus community.",onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => Auctionspage())),),
+              AuctionCard(imagePath: "assets/images/group.png", header: "Groups", description: "Connect with interest based groups.",onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => Groupspage())),),
+              AuctionCard(imagePath: "assets/images/store.png", header: "Stores", description: "Browse local campus stores and their unique products",onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => StoresPage())),)
             ],
           ),
                 ),
@@ -49,13 +56,13 @@ Widget options(double height,double width){
               children: [
               Column(children: [
                CategoryCard(icon: "assets/svgs/notebook.svg", name: "Textbooks", description: "Find academic essentials",size: 5,),
-               SizedBox(height: 10,),
+               SizedBox(height: 30,),
                CategoryCard(icon: "assets/svgs/furniture.svg", name: "Furniture", description: "Decorate your room",size: 3,)
               ],),
               SizedBox(width: width*0.13,),
               Column(children: [
                CategoryCard(icon: "assets/svgs/shirt.svg", name: "Clothes", description: "Buy at a low price",size: 3,),
-               SizedBox(height: 10,),
+               SizedBox(height: 30,),
                CategoryCard(icon: "assets/svgs/laptop.svg", name: "Electronics", description: "Gadgets and tech",size: 2,)
               ],)
             ],);

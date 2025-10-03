@@ -41,6 +41,9 @@ flutter:
     - assets/svgs/notebook.svg
     - assets/svgs/laptop.svg
     - assets/svgs/furniture.svg
+    - assets/images/auction.png
+    - assets/images/group.png
+    - assets/images/store.png
 
   fonts:
     - family: Nunito
