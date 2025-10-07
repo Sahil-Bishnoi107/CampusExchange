@@ -20,6 +20,7 @@ class Auctionprovider extends ChangeNotifier {
       List<AuctionModel> templist = [];
       for(var v in rawlist){
          final x = AuctionModel.fromJson(v);
+         print(x.itemId);
          templist.add(x);
       }
       auctions = templist;
@@ -38,9 +39,17 @@ class Auctionprovider extends ChangeNotifier {
  Future<void> placeBid(String itemid) async{
   final supabase = Supabase.instance.client;
   final currentuser = supabase.auth.currentUser;
+   if (currentuser == null) {
+      print("⚠️ No logged-in user found");
+      return;
+    }
   final id = currentuser!.id;
   final url = Uri.parse("${baseurl}/api/Auction/update");
    try{
+    print(jsonEncode({
+       "userid": id,
+       "itemid": itemid
+          }));
     final res = await http.put(url,
     headers: {"Content-Type": "application/json"},
     body: jsonEncode({
@@ -59,6 +68,17 @@ class Auctionprovider extends ChangeNotifier {
     print("could not get data with exception $e");
    }
 
+ }
+ void updatebid(String itemid){
+  final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+  final id = user?.id ?? "noi";
+     final index = auctions.indexWhere((auction) => auction.itemId == itemid);
+     if(index != -1){
+      auctions[index].currentPrice += auctions[index].increment;
+      auctions[index].currentBidder = id;
+     }
+     notifyListeners();
  }
 
 
