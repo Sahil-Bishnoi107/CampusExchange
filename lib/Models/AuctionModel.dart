@@ -5,16 +5,16 @@ class AuctionModel {
   final String description;
   final String address;
   final String category;
-  final String itemId;
+   String itemId;
   final String postedDate;
   final String condition;
   final String userImageUrl;
   final String userName;
   
   final int basePrice;
-  final int currentPrice;
+   int currentPrice;
   final int increment;
-  final String currentBidder;
+   String currentBidder;
 
   AuctionModel({
     required this.userId,

@@ -276,7 +276,7 @@ class _AuctionCardWidgetState extends State<AuctionCardWidget> {
                       onPressed: isMyBid ? null : () {
                         context.read<Auctionprovider>().updatebid(widget.auction.itemId);
                         context.read<Auctionprovider>().placeBid(widget.auction.itemId);
-                       
+                
                         _showBidDialog(context, size);
                       },
                       style: ElevatedButton.styleFrom(

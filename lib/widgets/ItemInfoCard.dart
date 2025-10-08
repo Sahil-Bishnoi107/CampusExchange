@@ -1,16 +1,20 @@
 import 'package:ecommerceapp/Models/ProductModel.dart';
 import 'package:ecommerceapp/screens/Reviews.dart';
+import 'package:ecommerceapp/services/RazorpayService.dart';
 import 'package:flutter/material.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:hive/hive.dart';
 
 class ItemCardWidget extends StatelessWidget {
   final ProductItem item;
+  final Razorpay razorpay;
+  
 
-  const ItemCardWidget({super.key, required this.item});
+  const ItemCardWidget({super.key, required this.item,required this.razorpay});
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size; // 📌 Screen dimensions
+    final size = MediaQuery.of(context).size; 
 
     return Expanded(
       child: Stack(
@@ -51,7 +55,7 @@ class ItemCardWidget extends StatelessWidget {
                 top: size.height * 0.015,
                 bottom: size.height * 0.02,
               ),
-              child: _buildBottomButtons(),
+              child: _buildBottomButtons(razorpay),
             ),
           ),
         ],
@@ -232,14 +236,27 @@ class ItemCardWidget extends StatelessWidget {
   }
 
   /// 🔹 Bottom Buttons
-  Widget _buildBottomButtons() {
+  Widget _buildBottomButtons(Razorpay razorpay) {
+
+     
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           Expanded(
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () async {
+                 String orderId = await startPayment(item.price);
+                   var options = {
+                     'key': 'rzp_test_XXXX',  
+                     'amount': item.price,
+                     'order_id': orderId,
+                     'name': 'My Test App',
+                     'description': 'Test Payment',
+                     'prefill': {'contact': '9999999999', 'email': 'test@example.com'}
+                     };
+              razorpay.open(options);
+              },
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(

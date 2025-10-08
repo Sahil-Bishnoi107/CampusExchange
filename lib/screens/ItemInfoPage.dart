@@ -1,6 +1,7 @@
 import 'package:ecommerceapp/Models/ProductModel.dart';
 import 'package:ecommerceapp/widgets/ItemInfoCard.dart';
 import 'package:flutter/material.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class ItemInfoPage extends StatefulWidget {
   final ProductItem item;
@@ -12,6 +13,19 @@ class ItemInfoPage extends StatefulWidget {
 }
 
 class _ItemInfoPageState extends State<ItemInfoPage> {
+  late Razorpay razorpay;
+  @override
+  void initState() {
+    super.initState();
+    razorpay = Razorpay();
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+  }
+  @override
+  void dispose() {
+    razorpay.clear();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
