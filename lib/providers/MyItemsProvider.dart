@@ -10,6 +10,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class Myitemsprovider extends ChangeNotifier {
    List<ProductItem> myItems = [];
    List<ProductItem> searcheditems = []; 
+   List<ProductItem> soldItems = [];
+   List<ProductItem> purchasedItems = [];
 
    //GET LIST OF ITEMS
    void getlistofmyitems() async {
@@ -17,7 +19,7 @@ class Myitemsprovider extends ChangeNotifier {
   final user = supabase.auth.currentUser;
   final id = user?.id ?? "noi";
   
-  final url = Uri.parse("$baseurl/api/item/user/$id");
+  final url = Uri.parse("$baseurl/api/item/user/pendingitems/$id");
   
   try {
     final response = await http.get(url);
@@ -84,5 +86,63 @@ Future<void> vectorSearch(String text) async{
   }
 }
 
+// GET LIST OF SOLD ITEMS
+   void getlistofSolditems() async {
+  final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+  final id = user?.id ?? "noi";
+  
+  final url = Uri.parse("$baseurl/api/item/user/solditems/$id");
+  
+  try {
+    final response = await http.get(url);
+    if(response.statusCode == 200){
+      final responebody = jsonDecode(response.body);
+      List<ProductItem> templist = [];
+      for(var v in responebody){
+        final tempitem = ProductItem.fromJson(v);
+        templist.add(tempitem);
+      }
+      soldItems = templist;
+      notifyListeners();
+      
+    }
+    else{
+      print("ERROR: HTTP ${response.statusCode} - ${response.body}");
+    }
+  }
+  catch(e){
+    print("EXCEPTION: Failed to fetch the list with exception $e");
+  }
+}
+
+   void getlistofPurchaseditems() async {
+  final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+  final id = user?.id ?? "noi";
+  
+  final url = Uri.parse("$baseurl/api/item/user/solditems/$id");
+  
+  try {
+    final response = await http.get(url);
+    if(response.statusCode == 200){
+      final responebody = jsonDecode(response.body);
+      List<ProductItem> templist = [];
+      for(var v in responebody){
+        final tempitem = ProductItem.fromJson(v);
+        templist.add(tempitem);
+      }
+      purchasedItems = templist;
+      notifyListeners();
+      
+    }
+    else{
+      print("ERROR: HTTP ${response.statusCode} - ${response.body}");
+    }
+  }
+  catch(e){
+    print("EXCEPTION: Failed to fetch the list with exception $e");
+  }
+}
   
 }

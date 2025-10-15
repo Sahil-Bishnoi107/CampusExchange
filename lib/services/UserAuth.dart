@@ -19,7 +19,7 @@ Future<void> signUpWithEmail({
     );
 
     if (res.user != null) {
-      print('✅ Signup successful for $email');
+      print(' Signup successful for $email');
       if (res.session != null) {
         String jwt = res.session!.accessToken;
         box.put("jwt", jwt);

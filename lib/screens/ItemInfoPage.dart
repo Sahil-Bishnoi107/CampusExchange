@@ -2,6 +2,7 @@ import 'package:ecommerceapp/Models/ProductModel.dart';
 import 'package:ecommerceapp/widgets/ItemInfoCard.dart';
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:ecommerceapp/services/RazorpayService.dart';
 
 class ItemInfoPage extends StatefulWidget {
   final ProductItem item;
@@ -18,8 +19,8 @@ class _ItemInfoPageState extends State<ItemInfoPage> {
   void initState() {
     super.initState();
     razorpay = Razorpay();
-    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
   }
   @override
   void dispose() {
@@ -37,7 +38,7 @@ class _ItemInfoPageState extends State<ItemInfoPage> {
           width: width,
           child: Column(
             children: [      
-              ItemCardWidget(item: widget.item)
+              ItemCardWidget(item: widget.item,razorpay: razorpay,)
             ],
           ),
         ),

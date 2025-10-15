@@ -19,10 +19,10 @@ class ItemCardWidget extends StatelessWidget {
     return Expanded(
       child: Stack(
         children: [
-          // 🔹 Scrollable content
+          
           SingleChildScrollView(
             padding: EdgeInsets.only(
-              bottom: size.height * 0.15, // space for footer
+              bottom: size.height * 0.15, 
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,13 +38,13 @@ class ItemCardWidget extends StatelessWidget {
                 SizedBox(height: size.height * 0.02),
                 _buildDescription(size),
                 SizedBox(height: size.height * 0.02),
-                // 🔹 Extra info now sits above footer
+               
                 _buildExtraInfo(),
               ],
             ),
           ),
 
-          // 🔹 Sticky footer (always at bottom)
+         
           Positioned(
             bottom: 0,
             left: 0,
@@ -55,7 +55,7 @@ class ItemCardWidget extends StatelessWidget {
                 top: size.height * 0.015,
                 bottom: size.height * 0.02,
               ),
-              child: _buildBottomButtons(razorpay),
+              child: _buildBottomButtons(razorpay,context),
             ),
           ),
         ],
@@ -236,7 +236,7 @@ class ItemCardWidget extends StatelessWidget {
   }
 
   /// 🔹 Bottom Buttons
-  Widget _buildBottomButtons(Razorpay razorpay) {
+  Widget _buildBottomButtons(Razorpay razorpay,BuildContext context) {
 
      
     return Padding(
@@ -268,18 +268,87 @@ class ItemCardWidget extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {showPaymentOptionsBottomSheet(context);},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8)),
               ),
-              child: const Text("Buy Now"),
+              child: const Text("Buy Now",style: TextStyle(color: Colors.white),),
             ),
           ),
         ],
       ),
     );
   }
+
+
+void showPaymentOptionsBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.zero, 
+    ),
+    builder: (BuildContext context) {
+      return SafeArea(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Select Payment Method",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              
+             
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(context); 
+                  // Add your cash payment logic here
+                },
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                child: const Text("Pay with Cash"),
+              ),
+              
+              const SizedBox(height: 12),
+              
+             
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); 
+                  // Add your online payment logic here
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                child: const Text(
+                  "Pay Online",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 }
