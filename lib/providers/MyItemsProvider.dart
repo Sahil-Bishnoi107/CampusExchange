@@ -12,6 +12,8 @@ class Myitemsprovider extends ChangeNotifier {
    List<ProductItem> searcheditems = []; 
    List<ProductItem> soldItems = [];
    List<ProductItem> purchasedItems = [];
+   List<ProductItem> mypurchaseditems = [];
+   List<ProductItem> mysolditems = [];
 
    //GET LIST OF ITEMS
    void getlistofmyitems() async {
@@ -142,6 +144,66 @@ Future<void> vectorSearch(String text) async{
   }
   catch(e){
     print("EXCEPTION: Failed to fetch the list with exception $e");
+  }
+}
+
+// GET LIST OF ITEMS PURCHASED BY ME
+void getpurchaseditemsbyme() async {
+  final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+  final id = user?.id ?? "noi";
+  
+  final url = Uri.parse("$baseurl/api/item/purchased/$id");
+  
+  try {
+    final response = await http.get(url);
+    if(response.statusCode == 200){
+      final responebody = jsonDecode(response.body);
+      List<ProductItem> templist = [];
+      for(var v in responebody){
+        final tempitem = ProductItem.fromJson(v);
+        templist.add(tempitem);
+      }
+      mypurchaseditems = templist;
+      notifyListeners();
+      
+    }
+    else{
+      print("ERROR: HTTP ${response.statusCode} - ${response.body}");
+    }
+  }
+  catch(e){
+    print("EXCEPTION: Failed to fetch purchased items with exception $e");
+  }
+}
+
+// GET LIST OF ITEMS SOLD BY ME
+void getsolditemsbyme() async {
+  final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+  final id = user?.id ?? "noi";
+  
+  final url = Uri.parse("$baseurl/api/item/sold/$id");
+  
+  try {
+    final response = await http.get(url);
+    if(response.statusCode == 200){
+      final responebody = jsonDecode(response.body);
+      List<ProductItem> templist = [];
+      for(var v in responebody){
+        final tempitem = ProductItem.fromJson(v);
+        templist.add(tempitem);
+      }
+      mysolditems = templist;
+      notifyListeners();
+      
+    }
+    else{
+      print("ERROR: HTTP ${response.statusCode} - ${response.body}");
+    }
+  }
+  catch(e){
+    print("EXCEPTION: Failed to fetch sold items with exception $e");
   }
 }
   

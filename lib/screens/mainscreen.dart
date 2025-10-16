@@ -1,6 +1,7 @@
 import 'package:ecommerceapp/screens/HomePage.dart';
 import 'package:ecommerceapp/screens/Profilepage.dart';
 import 'package:ecommerceapp/screens/SearchPage.dart';
+import 'package:ecommerceapp/screens/TranscationHistoryScreen.dart';
 import 'package:ecommerceapp/screens/myitemsscreen.dart';
 import 'package:ecommerceapp/widgets/bottomnavbar.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _MainscreenState extends State<Mainscreen> {
     Homepage(),
     SearchPage(),
     MyItemsScreen(),
-    const Center(child: Text('History Page', style: TextStyle(fontSize: 24))),
+    TranscationHistoryPage(),
     ProfilePage(),
   ];
   @override

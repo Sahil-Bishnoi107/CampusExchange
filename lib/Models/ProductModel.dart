@@ -13,6 +13,7 @@ class ProductItem {
   final condition;
   final double rating;
   bool paid;
+  final date;
 
   ProductItem({
     required this.userId,
@@ -28,7 +29,8 @@ class ProductItem {
     required this.userImageUrl,
     required this.userName,
     required this.rating,
-    required this.paid
+    required this.paid,
+    required this.date
   });
   factory ProductItem.fromJson(Map<String,dynamic> mp){
 
@@ -40,13 +42,14 @@ class ProductItem {
     String category = mp['category'] ?? "None";
     final userid = mp['userid'] ?? "userid";
     final itemid = mp['itemid'] ?? "itemid";
-    final posteddate = "5 September 2025";
+    final posteddate = mp['created_at'] ?? DateTime.now();
     final username = "Sahil Bishnoi";
     final userimageurl = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face';
     final codition = "new";
-    final paid = false;
+    final paid = mp['paid'];
+    final date = mp['purchased_at'] ?? DateTime.now();
 
     final double rating = mp['total_stars'] == null ? 1 : mp['stars_given']/(mp['total_stars']/5) ;
-    return ProductItem(imageUrl: imageurl, title: title, price: price,description: description,address: address,category: category,userId: userid,itemid: itemid,postedDate: posteddate,condition: codition,userImageUrl: userimageurl,userName: username,rating: rating,paid: paid);
+    return ProductItem(imageUrl: imageurl, title: title, price: price,description: description,address: address,category: category,userId: userid,itemid: itemid,postedDate: posteddate,condition: codition,userImageUrl: userimageurl,userName: username,rating: rating,paid: paid,date: date);
   }
 }
